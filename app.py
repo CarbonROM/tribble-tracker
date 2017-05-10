@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from database import Aggregate, Statistic
 
 from datetime import datetime, timedelta
-from flask import Flask, jsonify, render_template, request, abort
+from flask import Flask, jsonify, render_template, request, abort, send_from_directory
 from flask_mongoengine import MongoEngine
 from flask_redis import FlaskRedis
 
@@ -12,11 +12,17 @@ import codecs
 import hashlib
 import random
 import string
+import os
 
 app = Flask(__name__)
 app.config.from_object("config.Config")
 db = MongoEngine(app)
 redis_cache = FlaskRedis(app)
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.cli.command()
 @click.argument("start")
